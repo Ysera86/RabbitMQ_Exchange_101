@@ -24,34 +24,22 @@ namespace RabbitMQ_Exchange.Publisher
             using var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-            channel.QueueDeclare("queue-name", true, false, false);
-            // durable : kuyruklar memoryde olursa RabbitMQ restart olduğunda memorydeki kuyruklar gider durable false ise,gitsin  mi gitmesin m i burda hadi gitmesin, fiziksek kaydedilsin hadi
-            // exclusive: false , subscriber bu kanal olmazsa da başka biyerden de erişebilsin farklı kanallardan 
-            // autoDelete: true , son subscriber da down olsa kuyruk silinsin mi? yok gitmesin kuyruk
-
-            #region 1 er mesaj
-
-            //string message = "Hello, World!";
-
-            //// mesajlar byte[] olarak gönderilir RabbitMQya
-            //var messageBody = Encoding.UTF8.GetBytes(message);
-
-            //channel.BasicPublish(string.Empty, "queue-name", null, messageBody);
-            //// biz burada exchange kullanmadan direk kuyruğa yolluyoruz mesajı, arada exchange kullanmadan direk publisherdan kuyruğa gönderirsek bu işlemin adı default exchange  olarak geçer.
-            //// default echange kullanıyorska buradaki routingkeyimize mutlaka kuyruk adımızı vermeliyiz > channel.QueueDeclare("queue-name", true, false, false);."queue-name" - ki buna göre gelen mesajı bu kuyruğa gönderebilsin. 
-            //Console.WriteLine("Mesaj gönderilmiştir.");
-
-            #endregion
-
+            // create exchange and not queue (leave to the subscriber)
+            string exchangeName = "logs-fanout";
+            channel.ExchangeDeclare(exchangeName, durable:true,type: ExchangeType.Fanout);
+       
             #region 50 mesaj 
 
             Enumerable.Range(1, 50).ToList().ForEach(x =>
             {
-                string message = $"Message {x}";
+                string message = $"log {x}";
 
                 var messageBody = Encoding.UTF8.GetBytes(message);
 
-                channel.BasicPublish(string.Empty, "queue-name", null, messageBody);
+
+                //channel.BasicPublish(string.Empty, "queue-name", null, messageBody);// artık def exchange değil ve kuyruk yok
+                // RabbitMQ'dan "queue-name" isimli kuyruğu sildik. ve ilk çalıştırmada 50 mesajı yolladık ve Exchange tabında "logs-fanout" exchangeini gördük ancak henüz herhangi bir binding yok (ona bağlı bir subscriber yok), queue tabında da kuyruk yok. bu mesajlar havaya boşa gitti bekleyen herhangi bir subscriber yokıtu çünkü
+                channel.BasicPublish(exchangeName, "", null, messageBody);
 
                 Console.WriteLine($"Mesaj gönderilmiştir : {message}");
 
