@@ -32,13 +32,25 @@ var channel = connection.CreateModel();
 
 
 // farklı kuyruklar olmalı, consumer instance arttıkça kuyruk ismi farklı olmalı. random oluşturalım.
-var randomQueueName = channel.QueueDeclare().QueueName;
+//var randomQueueName = channel.QueueDeclare().QueueName;
 
 // channel.QueueDeclare  : satır :27 dersem, subsc işini bitirse dahi ilgili kuyruk silinmez ,
 
 string exchangeName = "logs-fanout"; // producer böyle oluşturdu
 // subsc işini bitirince ilgili kuyruk silinsin , uygulama her ayağa kalktığında oluşan kuyruk, uygulama her kapandığında silinecek, çnk QueueDeclare etmedik! Bind ettik!
-channel.QueueBind(randomQueueName, exchangeName, "", null);
+
+
+var queueName = "sample-queue-name";
+
+// KALICI KUYRUK
+//channel.QueueDeclare(randomQueueName, true, false, false);
+channel.QueueDeclare(queueName, true, false, false);
+// durable :true sabit diskte kalsın memoryde olmasın
+// exclusive : false başka kanallar bağalanabilsin özel olmasın
+// autoDelete : false otomatik silinmesin!! kuyruk kalıcı olacağı ve her seferinde silinip her ayağa kalktığında yeniden oluşturulmamasını istediğimiz için sabit isim vermeliyiz.
+
+//channel.QueueBind(randomQueueName, exchangeName, "", null);  // QueueDeclare olmazsa subs app her down olduğunda kuyruk düşer, örn hava durumu gönderimi ise, kuyruk kalmasın dinleyen yoksa, ama loglar gönderiliyorsa subs sunucusuna bişey olabilir vs. kuyruk ayakta kalsın ki dinleyenler gelince mesjaları almaya devam edebilsinler. o zaman üste QueueDeclare autoDelete : false ile.
+channel.QueueBind(queueName, exchangeName, "", null); 
 
 
 
@@ -66,7 +78,9 @@ var consumer = new EventingBasicConsumer(channel);
 
 
 //channel.BasicConsume("queue-name", false, consumer); // mesajları hemen silme ben haber vericem doğr uişlendiğinde o zaman sil
-channel.BasicConsume(randomQueueName, false, consumer); // artık oluşan kuyruk ne ise onu dinle. 
+//channel.BasicConsume(randomQueueName, false, consumer); // artık oluşan kuyruk ne ise onu dinle. 
+
+channel.BasicConsume(queueName, false, consumer);
 
 Console.WriteLine($" Loglar dinleniyor...");
 
