@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQ_Exchange.Publisher
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQ_Exchange.Subscriber", "RabbitMQ_Exchange.Subscriber\RabbitMQ_Exchange.Subscriber.csproj", "{045F1BA5-E233-4103-AB52-475C697CA131}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{3B287315-5221-4CF7-99E5-42069DEACD45}"
-	ProjectSection(SolutionItems) = preProject
-		Note.txt = Note.txt
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

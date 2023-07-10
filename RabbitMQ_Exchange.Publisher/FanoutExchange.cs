@@ -26,7 +26,7 @@ namespace RabbitMQ_Exchange.Publisher
 
             // create exchange and not queue (leave to the subscriber)
             string exchangeName = "logs-fanout";
-            channel.ExchangeDeclare(exchangeName, durable:true,type: ExchangeType.Fanout);
+            channel.ExchangeDeclare(exchangeName, durable:true,type: ExchangeType.Fanout); 
        
             #region 50 mesaj 
 
@@ -38,7 +38,7 @@ namespace RabbitMQ_Exchange.Publisher
 
 
                 //channel.BasicPublish(string.Empty, "queue-name", null, messageBody);// artık def exchange değil ve kuyruk yok
-                // RabbitMQ'dan "queue-name" isimli kuyruğu sildik. ve ilk çalıştırmada 50 mesajı yolladık ve Exchange tabında "logs-fanout" exchangeini gördük ancak henüz herhangi bir binding yok (ona bağlı bir subscriber yok), queue tabında da kuyruk yok. bu mesajlar havaya boşa gitti bekleyen herhangi bir subscriber yokıtu çünkü
+                // RabbitMQ'dan "queue-name" isimli kuyruğu sildik. ve ilk çalıştırmada 50 mesajı yolladık ve Exchange tabında "logs-fanout" exchangeini gördük ancak henüz herhangi bir binding yok (ona bağlı bir subscriber yok), queue tabında da kuyruk yok. bu mesajlar havaya boşa gitti bekleyen herhangi bir subscriber yokıtu çünkü. Boşa gitmesin isteseydik  kuyruk oluştururduk. ilerde örnekte yapcaz.
                 channel.BasicPublish(exchangeName, "", null, messageBody);
 
                 Console.WriteLine($"Mesaj gönderilmiştir : {message}");

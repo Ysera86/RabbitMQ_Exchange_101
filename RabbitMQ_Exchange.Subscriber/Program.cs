@@ -20,6 +20,10 @@ factory.Password = "guest";
 using var connection = factory.CreateConnection();
 var channel = connection.CreateModel();
 
+//channel.ExchangeDeclare(exchangeName, durable: true, type: ExchangeType.Fanout);
+// İstesek exchange i burda da oluştururduk, nasılsa producer oluşturdu hata almazdık. Kuyruk oluşturmadaki gibi aynı konfigurasyonlarla oluşturduktan snr sorun yok.
+
+
 //channel.QueueDeclare("queue-name", true, false, false);
 // 1 - bu satırı silersek ve daha önce publisher bu isimde kuyruk oluşturmamış olursak hata alırız.
 // 2 - bu satırı bırakırız ve publisher yine daha öncesinde bu isimde kuyruk oluşturmamış olursa subscriber oluşturur.
@@ -27,14 +31,27 @@ var channel = connection.CreateModel();
 // zaten varsa kuyruk burada da olması hata vermez. Sadece aynı isimde kuyruk oluşturuyosak tamamen aynı parametrelerle oluşturduğumuzdan  emin olmalıyız.
 
 
+// farklı kuyruklar olmalı, consumer instance arttıkça kuyruk ismi farklı olmalı. random oluşturalım.
+var randomQueueName = channel.QueueDeclare().QueueName;
+
+// channel.QueueDeclare  : satır :27 dersem, subsc işini bitirse dahi ilgili kuyruk silinmez ,
+
+string exchangeName = "logs-fanout"; // producer böyle oluşturdu
+// subsc işini bitirince ilgili kuyruk silinsin , uygulama her ayağa kalktığında oluşan kuyruk, uygulama her kapandığında silinecek, çnk QueueDeclare etmedik! Bind ettik!
+channel.QueueBind(randomQueueName, exchangeName, "", null);
+
+
+
 channel.BasicQos(0, 1, false); // her subscribera 1er mesaj yolla
 /*
  2 tane subscriber instance çalıştırmak için cli ile bsubscriber proje dizinine gidip clidan çalıştırıcam, 2 ayrı cli mesela 
 şuan publisher 50 mesaj yolladı, kuyrkta bekliyorlar, aşırı hızlı alıyor mesajları tek taraf bu nedenle 1,5 sn bekletelim : Thread.Sleep(1500);
 
-cd C:\Users\merve\source\repos\RabbitMQ\RabbitMQ.Subscriber 
+cd C:\Users\merve\source\repos\RabbitMQ_Exchange_101\RabbitMQ_Exchange.Subscriber
 dotnet run
  
+
+her ayağa kalkan subscriber instance ı rabbitmqde exchange e bind olur. exchange tabında binding görülebilir.
  */
 
 #region Açıklaması 
@@ -48,7 +65,10 @@ var consumer = new EventingBasicConsumer(channel);
  autoAck : false ise sen bunu direk silme, mesaj doğru işlenirse ben sana silmen için haber vericem demiş oluyoruz. > gerçek dünyada */
 
 
-channel.BasicConsume("queue-name", false, consumer); // mesajları hemen silme ben haber vericem doğr uişlendiğinde o zaman sil
+//channel.BasicConsume("queue-name", false, consumer); // mesajları hemen silme ben haber vericem doğr uişlendiğinde o zaman sil
+channel.BasicConsume(randomQueueName, false, consumer); // artık oluşan kuyruk ne ise onu dinle. 
+
+Console.WriteLine($" Loglar dinleniyor...");
 
 consumer.Received += (sender, args) =>
 {

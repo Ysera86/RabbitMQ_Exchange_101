@@ -1,0 +1,30 @@
+ Exchange Types in RabbitMq
+
+1 - Fanout Exchange
+2 - Direct Exchange
+3 - Topic Exchange
+4 - Header Exchange
+
+All have different routing 
+
+Exchange : Routes the messages to queues, which are published by the producer(publisher)
+Default Exchange  :  Sending messages which are published by the publisher, directly to queues without using exchange
+
+Consumers(subscribers) don't know echange, they connect to queues to read messages
+
+1 - We can have producer to create both the exchange and the queues in some scenarios
+or 
+2 - we can have producer to create the exchange and consumer to create the queues.
+
+
+for 1 - since queues are created by the producer, even if the consumers are not up, the messages will reside in exchange and queue, and will remain not deleted
+for 2 - if the consumers are not up, the messages will come to exchange and since no queue are created yet, the message will get deleted from not delivering to the queue
+
+
+1 - Fanout Exchange
+--------------------
+When producer publishes a message, Fanout exchange sends all messages to all queues bound to itself,  without applying any filter.
+If there is a message msg1, fe sends this same msg1 to all queues that bound to itself 1 by 1 for eg.
+In this scenario, producer creates the exchange and sends message.  It is consumers job to create queue/s to listen or not.
+If no consumer so no queue, no messages willget received, because producer doesn't care here if the message is recewived or not.
+
