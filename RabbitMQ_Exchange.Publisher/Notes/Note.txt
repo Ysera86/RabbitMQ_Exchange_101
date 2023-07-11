@@ -91,3 +91,6 @@ Mesajlarý kalýcý hale getirmek??
 
 
 
+ -------------
+
+ Complext-type nasýl gönderebiliriz?

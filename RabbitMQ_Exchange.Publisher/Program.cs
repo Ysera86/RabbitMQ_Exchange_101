@@ -12,5 +12,8 @@ using System.Text;
 //TopicExchange topicExchange = new TopicExchange();
 //topicExchange.Run();
 
-HeaderExchange headerExchange = new HeaderExchange();
-headerExchange.Run();
+//HeaderExchange headerExchange = new HeaderExchange();
+//headerExchange.Run();
+
+HeaderExchangeComplexType headerExchangeComplexType = new HeaderExchangeComplexType();
+headerExchangeComplexType.Run();

@@ -15,4 +15,8 @@
     <Folder Include="Notes\Header Exchange\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
 </Project>
