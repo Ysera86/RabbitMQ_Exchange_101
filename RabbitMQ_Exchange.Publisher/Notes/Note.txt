@@ -72,3 +72,19 @@ header => format=pdf
 header => format=pdf
 		  shape=a4
 		  x-match=all  ( =>  all of the key-value should be matching : format=pdf and  shape=a4 shpuld match!)
+
+
+
+
+-------------
+
+Uygulama restart olsa da exchange veya queue memoryde deðil fiziksel bir diske kaydedilir ve meswajlar kaybolmaz
+
+Exchange (durable = true)
+Queue (durable = true)
+
+
+
+
+
+
