@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RabbitMQ_Exchange.Subscriber
 {
-    public class DirectExchange
+    public class TopicExchange
     {
         public void Run()
         {
@@ -23,8 +23,19 @@ namespace RabbitMQ_Exchange.Subscriber
             using var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-         
-            // Direct Exchange için kuyruk oluşturmayı producer yaptı, ne QueueDeclare ne QueueBind yapmama gerek var.
+            string exchangeName = "logs-topic";
+
+            var queueName = channel.QueueDeclare().QueueName;
+
+
+            #region Kuyruk oluşturma :  QueueBind : Subscriber düşünce kuyruk da düşsün
+
+            var routeKey = "*.Error.*";
+
+            channel.QueueBind(queueName, exchangeName, routeKey);
+
+
+            #endregion
 
 
             channel.BasicQos(0, 1, false);
@@ -45,9 +56,7 @@ namespace RabbitMQ_Exchange.Subscriber
 
             var consumer = new EventingBasicConsumer(channel);
 
-            string logType = "Critical";
-
-            var queueName = $"direct-queue-{logType}";
+            
             channel.BasicConsume(queueName, false, consumer);
 
             Console.WriteLine($" Loglar dinleniyor...");

@@ -32,3 +32,21 @@ If no consumer so no queue, no messages willget received, because producer doesn
 2 - Direct Exchange
 --------------------
 When producer publishes a message, according to the route info, delivers the message to the specific queue. 
+
+
+3 - Topic Exchange
+--------------------
+Has more detailed routing structure so when we need more detailed routing scenario ...
+RoutingKey consists of dotted statements instead of  plain old string like the others
+
+RouteKey => Critical.Error.Warning
+RouteKey => *.Error.* => Containing .Error. inside somewhere
+RouteKey => #.Error.  => Ending with Error
+RouteKey => Critical.# => Starting with Critical
+
+* > equals one string statement :  *.*.* > 3 strings attached with a dot
+# > may be any string statement : #.Error > may be *.*.*.Error or *.Error or *.*.*.*.*.*.*.Error
+
+
+
+Topic Exchange - 1st thing subscriber up: binding happens on exchange then producer will send msg or msgs go in vain without a listening subs oz queue created by subs

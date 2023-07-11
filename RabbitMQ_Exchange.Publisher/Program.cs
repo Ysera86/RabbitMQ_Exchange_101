@@ -6,6 +6,8 @@ using System.Text;
 //FanoutExchange fanoutExchange = new FanoutExchange();   
 //fanoutExchange.Run();
 
+//DirectExchange directExchange = new DirectExchange();
+//directExchange.Run();
 
-DirectExchange directExchange = new DirectExchange();
-directExchange.Run();
+TopicExchange topicExchange = new TopicExchange();
+topicExchange.Run();
