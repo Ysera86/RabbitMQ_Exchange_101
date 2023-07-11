@@ -28,3 +28,7 @@ If there is a message msg1, fe sends this same msg1 to all queues that bound to 
 In this scenario, producer creates the exchange and sends message.  It is consumers job to create queue/s to listen or not.
 If no consumer so no queue, no messages willget received, because producer doesn't care here if the message is recewived or not.
 
+
+2 - Direct Exchange
+--------------------
+When producer publishes a message, according to the route info, delivers the message to the specific queue. 
