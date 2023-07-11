@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RabbitMQ_Exchange.Subscriber
 {
-    public class TopicExchange
+    public class HeaderExchange
     {
         public void Run()
         {
@@ -23,16 +23,19 @@ namespace RabbitMQ_Exchange.Subscriber
             using var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-            string exchangeName = "logs-topic";
+            string exchangeName = "header-exchange";
 
             var queueName = channel.QueueDeclare().QueueName;
 
 
             #region Kuyruk oluşturma :  QueueBind : Subscriber düşünce kuyruk da düşsün
 
-            var routeKey = "*.Error.*";
+            Dictionary<string, object> headers = new Dictionary<string, object>();
+            headers.Add("format", "pdf");
+            headers.Add("shape", "a4");
+            headers.Add("x-match", "all"); // üstteki diğer tüm key-valuelar publisherınkilerle uymalı.
 
-            channel.QueueBind(queueName, exchangeName, routeKey);
+            channel.QueueBind(queueName, exchangeName, string.Empty, headers);
 
 
             #endregion
@@ -41,7 +44,7 @@ namespace RabbitMQ_Exchange.Subscriber
             channel.BasicQos(0, 1, false);
 
             /*
-             * 
+             *
              * 
             2 tane subscriber instance çalıştırmak için cli ile subscriber proje dizinine gidip clidan çalıştırıcam, 2 ayrı cli mesela 
            şuan publisher 50 mesaj yolladı, kuyrkta bekliyorlar, aşırı hızlı alıyor mesajları tek taraf bu nedenle 1,5 sn bekletelim : Thread.Sleep(1500);
@@ -67,8 +70,6 @@ namespace RabbitMQ_Exchange.Subscriber
 
                 Thread.Sleep(1500);
                 Console.WriteLine($"Gelen mesaj : {message}");
-
-                //File.AppendAllText($"log-{logType.ToLower()}.txt", message + "\n");
 
                 channel.BasicAck(args.DeliveryTag, false);
             };

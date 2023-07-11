@@ -7,5 +7,8 @@
 //DirectExchange directExchange = new DirectExchange();
 //directExchange.Run();
 
-TopicExchange topicExchange = new TopicExchange();
-topicExchange.Run();
+//TopicExchange topicExchange = new TopicExchange();
+//topicExchange.Run();
+
+HeaderExchange headerExchange = new HeaderExchange();
+headerExchange.Run();

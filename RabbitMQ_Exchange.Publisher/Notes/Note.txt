@@ -50,3 +50,25 @@ RouteKey => Critical.# => Starting with Critical
 
 
 Topic Exchange - 1st thing subscriber up: binding happens on exchange then producer will send msg or msgs go in vain without a listening subs oz queue created by subs
+
+
+4 - Header Exchange
+--------------------
+Routing is stated inside header not by the routeKey.
+
+Producer
+---------------------
+header => format=pdf
+		  shape=a4
+				 
+
+Consumers
+---------------------
+header => format=pdf
+		  shape=a4
+		  x-match=any  ( =>  all of the key-value should be matching : e.g format=pdf or shape=a4 matching is ok)
+
+				 
+header => format=pdf
+		  shape=a4
+		  x-match=all  ( =>  all of the key-value should be matching : format=pdf and  shape=a4 shpuld match!)
