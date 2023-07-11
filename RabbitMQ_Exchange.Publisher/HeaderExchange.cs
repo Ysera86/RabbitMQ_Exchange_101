@@ -50,6 +50,9 @@ namespace RabbitMQ_Exchange.Publisher
             var properties = channel.CreateBasicProperties();
             properties.Headers = headers;
 
+            // Mesajlar kalıcı olsun
+            properties.Persistent = true;
+
             channel.BasicPublish(exchangeName, string.Empty, properties, Encoding.UTF8.GetBytes("header mesajım"));
             // routeKey empty çnk header exchange headerda tutuyor : properties
 
